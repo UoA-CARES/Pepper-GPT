@@ -11,9 +11,9 @@ BUFFSIZE = 2048
 
 class Client:
     def __init__(self):
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            self.client.connect((SERVER_HOST, SERVER_PORT))
+            self.__client.connect((SERVER_HOST, SERVER_PORT))
             print("Connect to Server successfully!")
             self.dataSend(clientName)
 
@@ -22,10 +22,11 @@ class Client:
             sys.exit()
 
     def dataSend(self, msg):
-        self.client.sendall(msg.encode())
+        self.__client.sendall(msg.encode())
 
     def close(self):
-        self.client.close()
+        self.__client.close()
+
 
 """
 if __name__ == '__main__':

@@ -9,11 +9,11 @@ BUFFSIZE = 2048
 
 class Client:
     def __init__(self):
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            self.client.connect((SERVER_HOST, SERVER_PORT))
+            self.__client.connect((SERVER_HOST, SERVER_PORT))
             print("Connect to Server successfully!")
-            self.client.sendall(clientName.encode())
+            self.__client.sendall(clientName.encode())
             while True:
                 msg = self.dataRecv()
                 print(msg)
@@ -25,12 +25,12 @@ class Client:
             sys.exit()
 
     def dataRecv(self):
-        msg = self.client.recv(BUFFSIZE)
+        msg = self.__client.recv(BUFFSIZE)
         msg = msg.decode()
         return msg
 
     def close(self):
-        self.client.close()
+        self.__client.close()
 
 
 if __name__ == '__main__':
