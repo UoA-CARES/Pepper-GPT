@@ -81,7 +81,8 @@ class gptAPI:
             self.setMessage("assistant", "I cannot do physical action but I am embedded in pepper robot so the robot "
                                          "will do it.")
             print(f"Pepper robot will do the action {self.r.getContent()}")
-            pass
+            action = f"${self.r.getContent()}"
+            return action
         else:  # Speech
             self.setMessage("user", msg)
             chatReply = openai.ChatCompletion.create(
@@ -92,6 +93,8 @@ class gptAPI:
             )
             reply = chatReply.choices[0].message.content
             self.setMessage("assistant", reply)
+            speech = f"@{reply}"
+            return speech
 
 
 if __name__ == '__main__':
