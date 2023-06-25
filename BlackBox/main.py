@@ -4,27 +4,7 @@ from speechRecognition import SpeechRecog
 from client import Client
 
 
-def translationTest(q):
-    """
-    flag=1 Translate the input sentence into English
-    flag=0 Translate the input sentence into Chinese
-    """
-    trans = Translation()
-    result = trans.baiduTranslate(q, flag=1)  # Baidu Translate
-    print("Original Sentence:" + q)
-    print(result)
-
-
-def srTest():
-    sr = SpeechRecog()
-    while True:
-        sr.speechRecognition()
-
-
 if __name__ == '__main__':
-    # q = raw_input("please input the word you want to translate:")
-    # q = "我要吃肥肠和炒饭"
-    # translationTest(q)
     sr = SpeechRecog()
     trans = Translation()
     client = Client()
