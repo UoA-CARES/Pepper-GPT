@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import socket
 import sys
-import select
+from chatGPT import gptAPI
 
 clientName = "BlackBox"
 SERVER_HOST = '127.0.0.1'
@@ -24,6 +24,11 @@ class Client:
     def dataSend(self, msg):
         self.__client.sendall(msg.encode())
 
+    def dataRecv(self):
+        msg = self.__client.recv(BUFFSIZE)
+        msg = msg.decode()
+        return msg
+
     def close(self):
         self.__client.close()
 
@@ -31,8 +36,12 @@ class Client:
 """
 if __name__ == '__main__':
     c = Client()
+    gpt = gptAPI()
 
     while True:
         msg = input('> ')
-        c.sendall(msg.encode())
-"""
+        reply = gpt.askChat(msg)
+        c.dataSend(reply)
+        print(f"Pepper-GPT: {reply}")
+        # print(f"PepperCtrl: {c.dataRecv()}")"""
+

@@ -14,15 +14,18 @@ class Client:
             self.__client.connect((SERVER_HOST, SERVER_PORT))
             print("Connect to Server successfully!")
             self.__client.sendall(clientName.encode())
-            while True:
+            """while True:
                 msg = self.dataRecv()
                 print(msg)
                 if msg == '-':
                     self.close()
-                    break
+                    break"""
         except Exception as e:
             print("Server does not exist!")
             sys.exit()
+
+    def dataSend(self, msg):
+        self.__client.sendall(msg.encode())
 
     def dataRecv(self):
         msg = self.__client.recv(BUFFSIZE)
@@ -33,5 +36,12 @@ class Client:
         self.__client.close()
 
 
-if __name__ == '__main__':
-    Client()
+"""if __name__ == '__main__':
+    c = Client()
+
+    while True:
+        msg = "BlackBox: "
+        msg += c.dataRecv()
+        print(msg)
+        msg = input('> ')
+        c.dataSend(msg)"""

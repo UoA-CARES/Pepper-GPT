@@ -53,7 +53,7 @@ class Server:
                     else:
                         print("No data received")
                     clientName = data.decode()
-                    self.clientList[clientName] = client
+                    self.clientList[clientName] = client  # Store the clientList
                 else:  # If clients send data to the server
                     data = s.recv(BUFFSIZE)
                     data = data.decode()
@@ -66,6 +66,14 @@ class Server:
                             
                         if data[0] == '$':  # BB send msg to PPCtrl for action
                             pass
+
+                        if data == '-':  # BB send signal to PPCtrl for close the client
+                            client = self.clientList["PepperCtrl"]
+                            client.sendall(data.encode())
+
+                        if data == '!':  # PPCtrl send msg to BB for next rec
+                            client = self.clientList["BlackBox"]
+                            client.sendall(data.encode())
 
                     else:
                         print("Close the Server ...")

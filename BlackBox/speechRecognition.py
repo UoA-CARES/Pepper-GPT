@@ -36,16 +36,3 @@ class SpeechRecog:
             # raise 'Could not request results from Google Speech Recognition Service'
             print('Could not request results from Google Speech Recognition Service')
             return
-
-"""
-# 设置音频文件的位置
-audio_file = './audio.wav'
-
-# 创建 SpeechRecognition 对象
-r = sr.Recognizer()
-
-# 读取音频文件
-with sr.AudioFile(audio_file) as source:
-    audio = r.record(source)
-
-"""
