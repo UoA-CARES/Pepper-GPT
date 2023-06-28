@@ -21,7 +21,6 @@ if __name__ == '__main__':
         else:
             content = content.encode('utf-8')  # Convert unicode into string
             tts.say(content)
-            print("The speech finish.")
             client.dataSend("!")  # Send a signal to BlackBox for continue audio rec
 
 
