@@ -7,6 +7,7 @@ SERVER_HOST = '127.0.0.1'
 SERVER_PORT = 12000
 BUFFSIZE = 2048
 
+
 class Client:
     def __init__(self):
         self.__client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -43,5 +44,7 @@ class Client:
         msg = "BlackBox: "
         msg += c.dataRecv()
         print(msg)
-        msg = input('> ')
-        c.dataSend(msg)"""
+        if msg == 'BlackBox: -':
+            c.close()
+            break
+        c.dataSend("!")"""

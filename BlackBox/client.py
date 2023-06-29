@@ -33,15 +33,15 @@ class Client:
         self.__client.close()
 
 
-"""
 if __name__ == '__main__':
     c = Client()
-    gpt = gptAPI()
+    # gpt = gptAPI()
 
     while True:
         msg = input('> ')
-        reply = gpt.askChat(msg)
-        c.dataSend(reply)
-        print(f"Pepper-GPT: {reply}")
-        # print(f"PepperCtrl: {c.dataRecv()}")"""
+        # reply = gpt.askChat(msg)
+        # c.dataSend(reply)
+        # print(f"Pepper-GPT: {reply}")
+        c.dataSend(msg)
+        print(f"PepperCtrl: {c.dataRecv()}")
 

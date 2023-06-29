@@ -1,0 +1,16 @@
+BB	- Black Box Client
+PPCtrl	- Pepper Controller Client
+
+Msg format:
+Prefix + content	*Note: len(Prefix) = 1
+
+Example:
+@Hello, world.  # speech content
+$to sing.	# physical action
+
+Prefix Meaning:
+@ : BB -> PPCtrl, send the reply from ChatGPT for dialogue
+$ : BB -> PPCtrl, signal for executing physical actions
+- : BB -> PPCtrl, signal for closing the client
+
+! : PPCtrl -> BB, signal for starting the next audio recording

@@ -10,7 +10,7 @@ if __name__ == '__main__':
     gpt = gptAPI()
     client = Client()
 
-    """while True:
+    while True:
         content = sr.speechRecognition()  # Rec the audio for speech recognition
         reply = ""
         if content is None:
@@ -21,7 +21,10 @@ if __name__ == '__main__':
             if content.lower() == "stop":  # Force quit
                 client.close()
                 break
+
+            # Make thinking action before answering or doing physical actions
+            # client.dataSend("$Thinking")
             reply = gpt.askChat(content)
             print(f"Pepper-GPT: {reply}")
         client.dataSend(reply)
-        client.dataRecv()"""
+        client.dataRecv()

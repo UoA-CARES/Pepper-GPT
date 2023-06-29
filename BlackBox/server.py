@@ -5,10 +5,6 @@ import socket
 """
 BB - Black Box Client
 PPCtrl - Pepper Controller Client
-
-Msg format:
-@ : BB -> PPCtrl, answer from ChatGPT
-$ : BB -> PPCtrl, signal for presenting thinking behaviour
 """
 
 HOST = '127.0.0.1'
@@ -18,10 +14,10 @@ BUFFSIZE = 2048
 
 
 class Server:
-    def __init__(self):
+    def __init__(self, host=HOST, port=PORT):
         # Initial the server
         self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        self.server.bind((HOST, PORT))
+        self.server.bind((host, port))
         self.server.listen(BACKLOG)
         print("Server started listening ", HOST, ": ", PORT)
 
@@ -59,7 +55,7 @@ class Server:
                     data = data.decode()
                     print(data)
                     if data:
-                        if data[0] == '@':  # BB send msg to PPCtrl for speech
+                        """if data[0] == '@':  # BB send msg to PPCtrl for speech
                             msg = data[1:]
                             client = self.clientList["PepperCtrl"]
                             client.sendall(msg.encode())
@@ -69,10 +65,14 @@ class Server:
 
                         if data == '-':  # BB send signal to PPCtrl for close the client
                             client = self.clientList["PepperCtrl"]
-                            client.sendall(data.encode())
+                            client.sendall(data.encode())"""
 
                         if data == '!':  # PPCtrl send msg to BB for next rec
                             client = self.clientList["BlackBox"]
+                            client.sendall(data.encode())
+
+                        else:  # BB send msg to PPCtrl
+                            client = self.clientList["PepperCtrl"]
                             client.sendall(data.encode())
 
                     else:
