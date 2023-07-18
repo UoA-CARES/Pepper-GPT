@@ -3,6 +3,10 @@ import socket
 import sys
 from chatGPT import gptAPI
 
+import threading
+from threading import Thread
+from threading import Timer
+
 clientName = "BlackBox"
 SERVER_HOST = '127.0.0.1'
 SERVER_PORT = 12000
@@ -33,15 +37,59 @@ class Client:
         self.__client.close()
 
 
-if __name__ == '__main__':
-    c = Client()
-    # gpt = gptAPI()
+client = Client()
 
-    while True:
-        msg = input('> ')
-        # reply = gpt.askChat(msg)
-        # c.dataSend(reply)
-        # print(f"Pepper-GPT: {reply}")
-        c.dataSend(msg)
-        print(f"PepperCtrl: {c.dataRecv()}")
+
+def thinking():
+    client.dataSend("$Thinking...")
+    print("Thinking...")
+
+
+class GPT_Thread(Thread):
+
+    # A flag to set the state of the thread (pause/runnable)
+    __runnable = threading.Event()
+    isReplied = False
+
+    def __init__(self, gpt):
+        super().__init__()
+        self.gpt = gpt
+        self.reply = ""
+        self.pause()
+
+    def run(self):
+        while True:
+            self.__runnable.wait()
+            msg = input('> ')
+            timer = Timer(2.0, thinking)
+            timer.start()
+            self.reply = self.gpt.askChat(msg)
+            timer.cancel()
+            client.dataSend(self.reply)
+            print(f"Pepper-GPT: {self.reply}")
+            print(f"PepperCtrl: {client.dataRecv()}")
+            # self.pause()
+
+    def getReply(self):
+        return self.reply
+
+    def setMsg(self, msg):
+        self.msg = msg
+
+    def pause(self):
+        self.__runnable.clear()
+
+    def resume(self):
+        self.__runnable.set()
+
+    def isFinished(self):
+        return self.__runnable.isSet()
+
+
+if __name__ == '__main__':
+    # c = Client()
+    gpt = gptAPI()
+    chat = GPT_Thread(gpt)
+    chat.start()
+    chat.resume()
 

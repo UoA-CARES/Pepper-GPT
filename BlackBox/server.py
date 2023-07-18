@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import select
 import socket
+import argparse
 
 """
 BB - Black Box Client
@@ -55,18 +56,6 @@ class Server:
                     data = data.decode()
                     print(data)
                     if data:
-                        """if data[0] == '@':  # BB send msg to PPCtrl for speech
-                            msg = data[1:]
-                            client = self.clientList["PepperCtrl"]
-                            client.sendall(msg.encode())
-                            
-                        if data[0] == '$':  # BB send msg to PPCtrl for action
-                            pass
-
-                        if data == '-':  # BB send signal to PPCtrl for close the client
-                            client = self.clientList["PepperCtrl"]
-                            client.sendall(data.encode())"""
-
                         if data == '!':  # PPCtrl send msg to BB for next rec
                             client = self.clientList["BlackBox"]
                             client.sendall(data.encode())
@@ -86,4 +75,13 @@ class Server:
 
 
 if __name__ == '__main__':
-    Server()
+    try:
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--port', action="store", dest="port", type=int, required=True)
+        given_args = parser.parse_args()
+        PORT = given_args.port
+        print(PORT)
+    except SystemExit as e:  # if the port number is empty
+        print(f'Port number error, use the default port: {PORT}')
+    finally:
+        Server()
