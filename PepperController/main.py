@@ -1,6 +1,4 @@
 # coding=utf-8
-import naoqi
-from naoqi import ALProxy
 from client import Client
 from pepper import Pepper
 
@@ -16,13 +14,12 @@ if __name__ == '__main__':
     while True:
         content = client.dataRecv()
         if content == '-':  # PPCtrl is required to close the client
+            print("PepperController is closing ...")
             client.close()
             break
         else:  # execute the cmds
             pp.execute(content.encode('utf-8'))  # Convert unicode into string
             client.dataSend("!")  # Send a signal to BlackBox for continue audio rec
-
-
 
     """
     while True:

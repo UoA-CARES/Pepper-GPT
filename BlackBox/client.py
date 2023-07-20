@@ -14,7 +14,11 @@ BUFFSIZE = 2048
 
 
 class Client:
-    def __init__(self):
+    def __init__(self, *args):
+        if args:
+            for arg in args:
+                # SERVER_PORT = arg
+                print(SERVER_PORT)
         self.__client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             self.__client.connect((SERVER_HOST, SERVER_PORT))
@@ -22,6 +26,7 @@ class Client:
             self.dataSend(clientName)
 
         except Exception as e:
+            print(SERVER_PORT)
             print("Server does not exist!")
             sys.exit()
 
@@ -37,7 +42,7 @@ class Client:
         self.__client.close()
 
 
-client = Client()
+"""client = Client()
 
 
 def thinking():
@@ -87,9 +92,8 @@ class GPT_Thread(Thread):
 
 
 if __name__ == '__main__':
-    # c = Client()
     gpt = gptAPI()
     chat = GPT_Thread(gpt)
     chat.start()
-    chat.resume()
+    chat.resume()"""
 

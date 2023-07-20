@@ -15,12 +15,6 @@ class Client:
             self.__client.connect((SERVER_HOST, SERVER_PORT))
             print("Connect to Server successfully!")
             self.__client.sendall(clientName.encode())
-            """while True:
-                msg = self.dataRecv()
-                print(msg)
-                if msg == '-':
-                    self.close()
-                    break"""
         except Exception as e:
             print("Server does not exist!")
             sys.exit()
