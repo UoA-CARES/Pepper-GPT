@@ -32,23 +32,31 @@ class GPT_Thread(Thread):
     def run(self):
         while True:
             self.__runnable.wait()
+            timer = Timer(2.0, thinking)  # Set the timer for thinking behaviour
+            sr.recording()
+            timer.start()
             content = sr.speechRecognition()  # Rec the audio for speech recognition
-            reply = ""
             if content is None:
-                reply = "@Sorry, I cannot hear you clearly. Please repeat your words."
-                print(reply)
+                self.reply = "@Sorry, I cannot hear you clearly. Please repeat your words."
+                timer.cancel()
+
+                print(f"Pepper-GPT: {self.reply}")
+                client.dataSend(self.reply)
+                print(f"PepperCtrl: {client.dataRecv()}")
             else:
                 if content.lower() == "stop":  # Force quit
                     client.close()
                     break
 
                 # Make thinking action before answering or doing physical actions
-                timer = Timer(2.0, thinking)
-                timer.start()
-                reply = gpt.askChat(content)
+                self.reply = gpt.askChat(content)
                 timer.cancel()
-                print(f"Pepper-GPT: {reply}")
-                client.dataSend(reply)
+                print(f"Pepper-GPT: {self.reply}")
+                client.dataSend(self.reply)
+                # Theoretically, there is no need for receiving twice data
+                # But maintain following operation can accurately pass the end flag
+                # after pepper robot complete its task (Speech)
+                # P.s. Actions has not be tested
                 client.dataRecv()
                 print(f"PepperCtrl: {client.dataRecv()}")
 
