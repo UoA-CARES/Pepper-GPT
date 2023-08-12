@@ -1,24 +1,30 @@
 # -*- coding: utf-8 -*-
+import psutil
 import socket
 import sys
-from chatGPT import gptAPI
 
-import threading
-from threading import Thread
-from threading import Timer
 
+def get_ip_address(adapter_name):
+    addrs = psutil.net_if_addrs()
+    if adapter_name in addrs:
+        addresses = addrs[adapter_name]
+        for addr in addresses:
+            if addr.family == socket.AF_INET:
+                return addr.address
+    return None
+
+
+# Using Port forwarding to connect the localhost and the virtual machine
+# WLAN:8000 (localhost) -> ens33:12000 (VM)
+adapter_name = "WLAN"
 clientName = "BlackBox"
-SERVER_HOST = '127.0.0.1'
-SERVER_PORT = 12000
-BUFFSIZE = 2048
+SERVER_HOST = get_ip_address(adapter_name)  # localhost ip address
+SERVER_PORT = 8000  # Port forwarding
+BUFF_SIZE = 2048
 
 
 class Client:
-    def __init__(self, *args):
-        if args:
-            for arg in args:
-                # SERVER_PORT = arg
-                print(SERVER_PORT)
+    def __init__(self):
         self.__client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             self.__client.connect((SERVER_HOST, SERVER_PORT))
@@ -26,7 +32,7 @@ class Client:
             self.dataSend(clientName)
 
         except Exception as e:
-            print(SERVER_PORT)
+            print(f"The connection to {SERVER_HOST}:{SERVER_PORT} failed.")
             print("Server does not exist!")
             sys.exit()
 
@@ -34,66 +40,10 @@ class Client:
         self.__client.sendall(msg.encode())
 
     def dataRecv(self):
-        msg = self.__client.recv(BUFFSIZE)
+        msg = self.__client.recv(BUFF_SIZE)
         msg = msg.decode()
         return msg
 
     def close(self):
         self.__client.close()
-
-
-"""client = Client()
-
-
-def thinking():
-    client.dataSend("$Thinking...")
-    print("Thinking...")
-
-
-class GPT_Thread(Thread):
-
-    # A flag to set the state of the thread (pause/runnable)
-    __runnable = threading.Event()
-    isReplied = False
-
-    def __init__(self, gpt):
-        super().__init__()
-        self.gpt = gpt
-        self.reply = ""
-        self.pause()
-
-    def run(self):
-        while True:
-            self.__runnable.wait()
-            msg = input('> ')
-            timer = Timer(2.0, thinking)
-            timer.start()
-            self.reply = self.gpt.askChat(msg)
-            timer.cancel()
-            client.dataSend(self.reply)
-            print(f"Pepper-GPT: {self.reply}")
-            print(f"PepperCtrl: {client.dataRecv()}")
-            # self.pause()
-
-    def getReply(self):
-        return self.reply
-
-    def setMsg(self, msg):
-        self.msg = msg
-
-    def pause(self):
-        self.__runnable.clear()
-
-    def resume(self):
-        self.__runnable.set()
-
-    def isFinished(self):
-        return self.__runnable.isSet()
-
-
-if __name__ == '__main__':
-    gpt = gptAPI()
-    chat = GPT_Thread(gpt)
-    chat.start()
-    chat.resume()"""
 
