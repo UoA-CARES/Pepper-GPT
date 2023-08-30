@@ -1,12 +1,12 @@
 # coding=utf-8
 import naoqi
 from naoqi import ALProxy
-from client import Client
+from actions import Actions
 
 
 class Pepper:
 
-    def __init__(self, ip='127.0.0.1', port='9559'):
+    def __init__(self, ip='172.22.1.21', port='9559'):
         self.ip = ip
         self.port = port
         print(self.ip, self.port)
@@ -16,8 +16,10 @@ class Pepper:
         tts.setLanguage("English")
 
         # set the speech mode of pepper robot
-        speak_move_service = ALProxy("ALSpeakingMovement", '172.22.1.21', 9559)
+        speak_move_service = ALProxy("ALSpeakingMovement", self.ip, self.port)
         speak_move_service.setMode("contextual")
+
+        self.agent = Actions(self.ip, self.port)
 
     def __getCommand(self, msg):
         isAction = False
@@ -34,6 +36,7 @@ class Pepper:
     def execute(self, msg):  # execute the command from users
         isAction, cmd = self.__getCommand(msg)
         if isAction:  # execute physical actions
+            cmd = cmd.lower()
             self.__action(cmd)
             print("Action", cmd)
         else:  # speech the content
@@ -42,15 +45,19 @@ class Pepper:
 
     def __speech(self, content):
         tts = ALProxy("ALAnimatedSpeech", self.ip, self.port)
+        speech = ""
         tts.say(content)
 
     def __action(self, action):
         # tts = ALProxy("ALTextToSpeech", self.ip, self.port)
         # tts.setLanguage("English")
         # tts.say(action)
-        tts = ALProxy("ALAnimatedSpeech", self.ip, self.port)
-        tts.say("^start(animations/Stand/Gestures/Thinking_8)Well...^wait(animations/Stand/Gestures/Thinking_8)")
-        pass
+
+        for key in self.agent.actions_dict.keys():
+            if key in action:
+                value = self.agent.actions_dict[key]
+                value()
+            pass
 
 
 """if __name__ == '__main__':
