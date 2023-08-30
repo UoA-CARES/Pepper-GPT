@@ -19,7 +19,8 @@ def get_ip_address(adapter_name):
 adapter_name = "WLAN"
 clientName = "BlackBox"
 SERVER_HOST = get_ip_address(adapter_name)  # localhost ip address
-SERVER_PORT = 8000  # Port forwarding
+SERVER_PORT = 8000  # Port forwarding - without VPN
+# SERVER_PORT = 8080  # Port forwarding
 BUFF_SIZE = 2048
 
 

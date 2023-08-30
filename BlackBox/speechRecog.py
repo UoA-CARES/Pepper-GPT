@@ -14,8 +14,6 @@ class SpeechRecog:
     def listen(self):
         try:
             self.record_audio()
-            content = self.sr_openai_whisper("output")
-            return content
         except Exception as e:
             print(f"WARNING!!! : {e}")
             sys.exit()
@@ -83,7 +81,12 @@ class SpeechRecog:
 
     def sr_openai_whisper(self, file_name):
         file_path = f"{file_name}.wav"
-        results = self.model.transcribe(file_path)
-        content = ", ".join([i["text"] for i in results["segments"] if i is not None])
-        print(f"Recog Result: {content}\n")
-        return content
+        try:
+            results = self.model.transcribe(file_path, language='en')
+            content = ", ".join([i["text"] for i in results["segments"] if i is not None])
+            print(f"Recog Result: {content}\n")
+            return content
+        except Exception as e:
+            print(f"WARNING!!! : {e}")
+            sys.exit()
+
