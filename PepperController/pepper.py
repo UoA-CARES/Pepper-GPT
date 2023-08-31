@@ -19,7 +19,15 @@ class Pepper:
         speak_move_service = ALProxy("ALSpeakingMovement", self.ip, self.port)
         speak_move_service.setMode("contextual")
 
+        # set the listening mode of pepper robot
+        listen_move_service = ALProxy("ALListeningMovement", self.ip, self.port)
+        listen_move_service.setEnabled(False)
+        listen_service = ALProxy("ALSpeechRecognition", self.ip, self.port)
+        listen_service.pause(True)
+        listen_service.removeAllContext()
+
         self.agent = Actions(self.ip, self.port)
+        print("Pepper Initialise Successfully.")
 
     def __getCommand(self, msg):
         isAction = False
@@ -49,15 +57,13 @@ class Pepper:
         tts.say(content)
 
     def __action(self, action):
-        # tts = ALProxy("ALTextToSpeech", self.ip, self.port)
-        # tts.setLanguage("English")
-        # tts.say(action)
-
         for key in self.agent.actions_dict.keys():
-            if key in action:
+            if key in action or action in key:
                 value = self.agent.actions_dict[key]
                 value()
-            pass
+                break
+        else:
+            self.agent.notExistReply()
 
 
 """if __name__ == '__main__':
