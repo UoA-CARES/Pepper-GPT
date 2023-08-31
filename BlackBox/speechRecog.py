@@ -90,3 +90,8 @@ class SpeechRecog:
             print(f"WARNING!!! : {e}")
             sys.exit()
 
+
+if __name__=='__main__':
+    s = SpeechRecog()
+    s.listen()
+    s.sr_openai_whisper("output")

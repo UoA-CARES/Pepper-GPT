@@ -100,13 +100,8 @@ class gptAPI:
         self.__isAction(msg)  # classify the reply type
 
         if self.r.isAction():  # Physical Action
-            prompt = f"Please {self.r.getContent()}"
-            self.setMessage("user", prompt)
-            self.setMessage("assistant", "I cannot do physical action but I am embedded in pepper robot so the robot "
-                                         "will do it.")
-            print(f"Pepper robot will do the action {self.r.getContent()}")
-            action = f"${self.r.getContent()}"
-            return action
+            prompt = self.r.getContent()
+            return self.doActions(prompt)
         else:  # Speech
             self.setMessage("user", msg)
             chatReply = openai.ChatCompletion.create(
@@ -116,6 +111,54 @@ class gptAPI:
                 temperature=0.6
             )
             reply = chatReply.choices[0].message.content
+            if "I'm sorry, but" in reply and "physical" in reply:  # double check whether GPT analyse correctly
+                prompt = self.find_and_get_next_word(reply, "like")[:-3]
+                return self.doActions(prompt)
             self.setMessage("assistant", reply)
             speech = f"@{reply}"
             return speech
+
+    def doActions(self, prompt):
+        action = f"Please {prompt}"
+        self.setMessage("user", action)
+        self.setMessage("assistant",
+                        "I cannot do physical action but I am embedded in pepper robot so the robot "
+                        "will do it.")
+        print(f"Pepper robot will do the action {prompt}")
+        action = f"${prompt}"
+        return action
+
+    def find_and_get_next_word(self, sentence, target_word):
+        index = sentence.find(target_word)
+
+        if index != -1:  # Target word found in the sentence
+            # Find the next space character after the target word
+            next_space = sentence.find(" ", index)
+
+            if next_space != -1:  # There is a space after the target word
+                # Extract the next word after the target word
+                next_word_start = next_space + 1
+                next_word_end = sentence.find(" ", next_word_start)
+                if next_word_end == -1:
+                    next_word_end = len(sentence)
+                next_word = sentence[next_word_start:next_word_end]
+                return next_word
+            else:
+                return None  # No word found after the target word
+        else:
+            return None  # Target word not found in the sentence
+
+
+
+
+"""if __name__ == '__main__':
+    content = "I'm sorry, but as an AI language model, I don't have a physical body or the ability to perform " \
+              "physical actions like rotating my head. I'm here to assist you with information and answer your " \
+              "questions to the best of my abilities. "
+    target_word = "like"
+    next_word = gptAPI().find_and_get_next_word(content, target_word)[:-3]
+
+    if next_word:
+        print(f"The word after '{target_word}' is '{next_word}'.")
+    else:
+        print(f"No word found after '{target_word}'.")"""
