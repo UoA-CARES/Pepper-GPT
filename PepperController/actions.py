@@ -92,7 +92,7 @@ class Actions:
 
     def notExistReply(self):
         action = self.action_think[random.randint(0, len(self.action_think) - 1)]
-        content = "I am sorry but my developer did not design me to do this physical action."
+        content = "I am sorry but my developer did not design me to do this action."
         command = "^start(%s) %s...^wait(%s)" % (action, content, action)
         self.tts.say(command)
 
