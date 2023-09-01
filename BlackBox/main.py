@@ -17,6 +17,7 @@ if __name__ == '__main__':
     sr = SpeechRecog()
     sr.sr_openai_whisper("output")
     gpt = gptAPI()
+    gpt._isAction("Hi.")
     temp = input("Press Enter to start.")
 
     greeting = "@^start(animations/Stand/Gestures/Hey_1)Hello, world! My name is Pepper-GPT.Nice to meet you." \
@@ -25,7 +26,7 @@ if __name__ == '__main__':
     client.dataRecv()
 
     while True:
-        timer = Timer(2, thinking)  # Set the timer for thinking behaviour
+        timer = Timer(3, thinking)  # Set the timer for thinking behaviour
         content = sr.listen()
         timer.start()
         content = sr.sr_openai_whisper("output")

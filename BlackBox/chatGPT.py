@@ -63,7 +63,7 @@ class gptAPI:
         # Add the file handler into logger
         logger.addHandler(file_handler)
 
-    def __isAction(self, prompt):  # Justify whether the prompt is for physical behaviour
+    def _isAction(self, prompt):  # Justify whether the prompt is for physical behaviour
         msg = [
             {"role": "system", "content": "I want you to act as a robot to analyse the input command. "
                                           "Your answer should with the format: "
@@ -97,22 +97,25 @@ class gptAPI:
         logger.info(f"{role}: {msg}")
 
     def askChat(self, msg):
-        self.__isAction(msg)  # classify the reply type
+        self._isAction(msg)  # classify the reply type
 
         if self.r.isAction():  # Physical Action
             prompt = self.r.getContent()
             return self.doActions(prompt)
         else:  # Speech
+            msg = f"{msg} (answer in 50 words)"
             self.setMessage("user", msg)
             chatReply = openai.ChatCompletion.create(
                 model=MODEL_ENGINE,
                 messages=self.__msg,
-                max_tokens=100,
+                max_tokens=150,
                 temperature=0.6
             )
             reply = chatReply.choices[0].message.content
-            if "I'm sorry, but" in reply and "physical" in reply:  # double check whether GPT analyse correctly
+            if ("I'm sorry, but" in reply or "As a robot" in reply) and "physical" in reply:  # double check whether GPT analyse correctly
                 prompt = self.find_and_get_next_word(reply, "like")[:-3]
+                if prompt is None:
+                    return self.doActions("NoneAction")
                 return self.doActions(prompt)
             self.setMessage("assistant", reply)
             speech = f"@{reply}"
