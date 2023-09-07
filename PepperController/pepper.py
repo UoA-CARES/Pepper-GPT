@@ -2,6 +2,7 @@
 import naoqi
 from naoqi import ALProxy
 from actions import Actions
+import re
 
 
 class Pepper:
@@ -64,6 +65,7 @@ class Pepper:
                 break
         else:
             self.agent.notExistReply()
+
 
 
 """if __name__ == '__main__':

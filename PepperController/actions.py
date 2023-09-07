@@ -85,7 +85,7 @@ class Actions:
     def actions_init(self):
         self.actions_dict["think"] = self.think
         self.actions_dict["dance"] = self.dance
-        self.actions_dict["guitar"] = self.guitar
+        self.actions_dict["play"] = self.guitar
         self.actions_dict["show"] = self.fitness
         self.actions_dict["sing"] = self.sing
         self.actions_dict["rotate"] = self.rotate
