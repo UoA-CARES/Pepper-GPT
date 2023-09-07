@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 from threading import Timer
 
 from client import Client
@@ -7,9 +8,18 @@ from chatGPT import gptAPI
 
 
 def thinking():
-    client.dataSend("$think")
     print("Thinking...")
+    client.dataSend("$think")
     client.dataRecv()
+
+
+def contains_non_english_characters(sentence):
+    pattern = r'[^A-Za-z0-9\s\.,;?!-:^_@]+'
+    match = re.search(pattern, sentence)
+    if match:
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
@@ -17,7 +27,7 @@ if __name__ == '__main__':
     sr = SpeechRecog()
     sr.sr_openai_whisper("output")
     gpt = gptAPI()
-    gpt._isAction("Hi.")
+    gpt._isAction("Hi.")  # test gpt connection
     temp = input("Press Enter to start.")
 
     greeting = "@^start(animations/Stand/Gestures/Hey_1)Hello, world! My name is Pepper-GPT.Nice to meet you." \
@@ -26,7 +36,7 @@ if __name__ == '__main__':
     client.dataRecv()
 
     while True:
-        timer = Timer(3, thinking)  # Set the timer for thinking behaviour
+        timer = Timer(2.5, thinking)  # Set the timer for thinking behaviour
         content = sr.listen()
         timer.start()
         content = sr.sr_openai_whisper("output")
@@ -36,6 +46,7 @@ if __name__ == '__main__':
         else:
             if content.lower().strip()[:-1] == "stop":  # Force quit
                 timer.cancel()
+                client.dataRecv()
                 client.close()
                 break
 
@@ -43,5 +54,8 @@ if __name__ == '__main__':
             reply = gpt.askChat(content)
             timer.cancel()
         print(f"Pepper-GPT: {reply}")
+        if contains_non_english_characters(reply):
+            reply = "@Sorry I cannot execute it, the reply may has multiple language in it. Please change the content."
         client.dataSend(reply)
-        print(f"PepperCtrl: {client.dataRecv()}")
+        recv_msg = client.dataRecv()
+        print(f"PepperCtrl: {recv_msg}")

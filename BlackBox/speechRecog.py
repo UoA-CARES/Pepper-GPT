@@ -91,7 +91,10 @@ class SpeechRecog:
             sys.exit()
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     s = SpeechRecog()
-    s.listen()
-    s.sr_openai_whisper("output")
+    content = input("Press Enter to test or input 'e' to exit >> ")
+    while content != 'e':
+        s.listen()
+        s.sr_openai_whisper("output")
+        content = input("Press Enter to test or input 'e' to exit >> ")

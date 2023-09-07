@@ -112,7 +112,8 @@ class gptAPI:
                 temperature=0.6
             )
             reply = chatReply.choices[0].message.content
-            if ("I'm sorry, but" in reply or "As a robot" in reply) and "physical" in reply:  # double check whether GPT analyse correctly
+            # double check whether GPT analyse correctly
+            if ("I'm sorry, but" in reply or "As a robot" or "As a text-based AI" in reply) and "physical" in reply:
                 prompt = self.find_and_get_next_word(reply, "like")[:-3]
                 if prompt is None:
                     return self.doActions("NoneAction")
