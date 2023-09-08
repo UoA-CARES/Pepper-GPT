@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 import os
 
-API_KEY = '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'
+API_KEY = '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'
 MODEL_ENGINE = "gpt-3.5-turbo"
 logger = logging.getLogger('my_logger')
 
@@ -74,7 +74,7 @@ class gptAPI:
                                           "For example, when you are asked 'Do you sing?', response 'True, sing'"},
             {"role": "user", "content": "Please analyse following content, does it ask you to do physical action? "
                                         "What physical action are asked? Answer with the format "
-                                        "'True/False, what physical action (infinitive form).'"
+                                        "'True/False, what physical action (infinitive form).'\n\n"
                                         f"{prompt}"}]
         response = openai.ChatCompletion.create(
             model=MODEL_ENGINE,
@@ -98,26 +98,23 @@ class gptAPI:
 
     def askChat(self, msg):
         self._isAction(msg)  # classify the reply type
+        msg = f"{msg} (answer in 50 words)"
+        self.setMessage("user", msg)
+        chatReply = openai.ChatCompletion.create(
+            model=MODEL_ENGINE,
+            messages=self.__msg,
+            max_tokens=150,
+            temperature=0.6
+        )
+        reply = chatReply.choices[0].message.content
+        double_check, action = self.reply_check(reply)  # double check whether GPT analyse correctly
 
-        if self.r.isAction():  # Physical Action
+        if self.r.isAction() and double_check:  # Physical Action
             prompt = self.r.getContent()
             return self.doActions(prompt)
+        elif not self.r.isAction() and double_check:
+            return self.doActions(action)
         else:  # Speech
-            msg = f"{msg} (answer in 50 words)"
-            self.setMessage("user", msg)
-            chatReply = openai.ChatCompletion.create(
-                model=MODEL_ENGINE,
-                messages=self.__msg,
-                max_tokens=150,
-                temperature=0.6
-            )
-            reply = chatReply.choices[0].message.content
-            # double check whether GPT analyse correctly
-            if ("I'm sorry, but" in reply or "As a robot" or "As a text-based AI" in reply) and "physical" in reply:
-                prompt = self.find_and_get_next_word(reply, "like")[:-3]
-                if prompt is None:
-                    return self.doActions("NoneAction")
-                return self.doActions(prompt)
             self.setMessage("assistant", reply)
             speech = f"@{reply}"
             return speech
@@ -152,17 +149,32 @@ class gptAPI:
         else:
             return None  # Target word not found in the sentence
 
+    def reply_check(self, reply):
+        if "physical" in reply.lower():
+            msg = [
+                {"role": "system", "content": "Analyse the user's content and reply in the format '"
+                                              "'what physical action (infinitive form)'"},
+                {"role": "user", "content": "Please analyse following content, what physical action you cannot do? "
+                                            "Please analyse following content, what physical action you cannot do? "
+                                            "Answer with the format "
+                                            "what physical action (infinitive form):'\n\n"
+                                            f"{reply}"}]
+            response = openai.ChatCompletion.create(
+                model=MODEL_ENGINE,
+                messages=msg,
+                max_tokens=10,
+                temperature=0
+            )
+            result = f"Double_Check_Result = {response.choices[0].message.content}"
+            print(result)
 
+            return True, response.choices[0].message.content
 
+        return False, " "
 
-"""if __name__ == '__main__':
-    content = "I'm sorry, but as an AI language model, I don't have a physical body or the ability to perform " \
-              "physical actions like rotating my head. I'm here to assist you with information and answer your " \
-              "questions to the best of my abilities. "
-    target_word = "like"
-    next_word = gptAPI().find_and_get_next_word(content, target_word)[:-3]
-
-    if next_word:
-        print(f"The word after '{target_word}' is '{next_word}'.")
-    else:
-        print(f"No word found after '{target_word}'.")"""
+    def clearHistory(self):
+        self.__msg = [
+            {"role": "system", "content": "You are a helpful robot assistant named as Pepper-GPT, a robot incorporate "
+                                          "with GPT API. All your reply should less than 50 words."
+                                          "All your reply should less than 50 words."}
+        ]
