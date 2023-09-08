@@ -82,13 +82,21 @@ class Actions:
                    "^wait(animations/Stand/Waiting/Robot_1)")
         self.tts.say(command)
 
+    def list(self):
+        command = ("As Pepper-GPT, I can sing a birthday song, dance, play air guitar, rotate my head and show my "
+                   "muscles. Just let me know what you want me to do.")
+        self.tts.say(command)
+
     def actions_init(self):
         self.actions_dict["think"] = self.think
         self.actions_dict["dance"] = self.dance
         self.actions_dict["play"] = self.guitar
+        self.actions_dict["guitar"] = self.guitar
         self.actions_dict["show"] = self.fitness
         self.actions_dict["sing"] = self.sing
         self.actions_dict["rotate"] = self.rotate
+        self.actions_dict["physical"] = self.list
+        self.actions_dict["perform"] = self.list
 
     def notExistReply(self):
         action = self.action_think[random.randint(0, len(self.action_think) - 1)]
