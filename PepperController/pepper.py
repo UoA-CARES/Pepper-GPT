@@ -23,9 +23,13 @@ class Pepper:
         # set the listening mode of pepper robot
         listen_move_service = ALProxy("ALListeningMovement", self.ip, self.port)
         listen_move_service.setEnabled(False)
+
+        # Disable the speech recognition function of pepper
         listen_service = ALProxy("ALSpeechRecognition", self.ip, self.port)
         listen_service.pause(True)
         listen_service.removeAllContext()
+        listen_service = ALProxy("ALDialog", self.ip, self.port)
+        listen_service.setConfidenceThreshold('BNF', 1, "English")
 
         self.agent = Actions(self.ip, self.port)
         print("Pepper Initialise Successfully.")
