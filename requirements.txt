@@ -1,0 +1,6 @@
+numpy==1.23.5
+openai==0.27.8
+openai_whisper==20230314
+psutil==5.9.5
+PyAudio==0.2.13
+torch==2.0.1+cu117
