@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 import os
 
-API_KEY = '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'
+API_KEY = ''
 MODEL_ENGINE = "gpt-3.5-turbo"
 logger = logging.getLogger('my_logger')
 
