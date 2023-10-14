@@ -37,6 +37,9 @@ e.g. `sudo ip route del 10.0.0.0/8`
 
 Before running the programs, make sure the device is with a GPU. 
 
+#### Dependency
+Ensure the system is installed with **ffmpeg** and **conda**.
+
 All the libraries are listed in the requirements.txt file. Use the command:
 
 `pip install -r requirements.txt`
@@ -88,6 +91,6 @@ open the path, find this file and copy it to the **LD_LIBRARY_PATH**
 2. Run the VPN.
 3. Set the network according to the section **Network Settings**
 4. Run the `server.py` file in Ubuntu for starting
-5. Run the `main.py` file in Ubuntu for opening the client of **Pepper Controller**
-6. Run the `main.py` file in Windows for opening the client of **Black Box**
-7. If the terminal print out the information "`Press Enter to Start.`", then the project runs successfully.
+5. Run the `main.py` file in Ubuntu to open the client of **Pepper Controller**
+6. Run the `main.py` file in Windows to open the client of **Black Box** (Remember to fill the api_key in `chatGPT.py` file)
+7. If the terminal prints out the information "`Press Enter to Start.`", then the project runs successfully.
